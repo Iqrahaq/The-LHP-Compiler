@@ -51,7 +51,7 @@ char *get_current_date_and_time()
 
 void analyse_preprocessor_directives(FILE *lhp_file, FILE *exe_file, char *line)
 {
-    
+    fprintf(exe_file, "%s\n", "#include \"fcgi_stdio.h\"");
     //PreProcessor Directives will always start with '#'.
     size_t len = 0;
     ssize_t read;
@@ -88,8 +88,8 @@ void analyse_preprocessor_directives(FILE *lhp_file, FILE *exe_file, char *line)
 void analyse_html(FILE *lhp_file, FILE *exe_file, char *line)
 {
 
-    char *head = "<Â£lhp";
-    char *tail = "Â£>";
+    char *head = "<£lhp";
+    char *tail = "£>";
     int lhp_counter = 0;
   
     rewind(lhp_file);
@@ -140,8 +140,8 @@ void analyse_html(FILE *lhp_file, FILE *exe_file, char *line)
 
 void analyse_c(FILE *lhp_file, FILE *exe_file, char *line)
 {
-    char *head = "<Â£lhp";
-    char *tail = "Â£>";
+    char *head = "<£lhp";
+    char *tail = "£>";
     int lhp_counter = 0;
     
     rewind(lhp_file);
@@ -178,12 +178,14 @@ void analyse_c(FILE *lhp_file, FILE *exe_file, char *line)
             
         //Insert Function Calls of HTML back into C.
         if(strstr(line, " main(") != NULL){
+            fprintf(exe_file, "\t\t%s\n", "while (FCGI_Accept() >= 0){");
             fprintf(exe_file, "\t\t%s\n", "header_html();");
         }
 
         //Insert Function Calls of HTML back into C.
         if(strstr(line, "return 0") != NULL){
             fprintf(exe_file, "\t\t%s\n", "footer_html();");
+            fprintf(exe_file, "\t\t%s\n", "}");
             fprintf(exe_file, "%s\n", line);
         }  
     }
@@ -197,7 +199,7 @@ void compile_exe_file(char *file_name, char *command, FILE *lhp_log)
     remove_file_extension(file_name);
 
     // 80 is the command length without file_names.
-    size_t command_length = 89 + ((strlen(file_name)*2));
+    size_t command_length = 96 + ((strlen(file_name)*2));
     command = realloc(command, command_length);
 
     #ifdef _WIN32
@@ -206,14 +208,14 @@ void compile_exe_file(char *file_name, char *command, FILE *lhp_log)
         fprintf(lhp_log, "%s\n", "Please move to a Linux/Unix OS to use this.");
     #elif __linux__
         fprintf(lhp_log, "%s\n", "Correct Operating System in use (OS: Linux).");
-        strcpy(command, "gcc -g -std=c99 -Wall -o ");
+        strcpy(command, "gcc -g -std=c99 -Wall -lfcgi -o ");
         command = strcat(command, file_name);
         command = strcat(command, ".exe ");
         command = strcat(command, file_name);
         command = strcat(command, ".c `mysql_config --cflags --libs` 2>> LHP.log");
     #elif __unix__
         fprintf(lhp_log, "%s\n", "Correct Operating System in use (OS: Unix).");
-        strcpy(command, "gcc -g -std=c99 -Wall -o ");
+        strcpy(command, "gcc -g -std=c99 -Wall -lfcgi -o ");
         command = strcat(command, file_name);
         command = strcat(command, ".exe ");
         command = strcat(command, file_name);
