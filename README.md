@@ -6,7 +6,7 @@
   The LHP Compiler
 </h1>
 
-[![Version](https://badge.fury.io/gh/tterb%2FHyde.svg)](https://badge.fury.io/gh/tterb%2FHyde)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://img.shields.io/badge/version-1.0.0-blue)
 [![HitCount](http://hits.dwyl.com/Iqrahaq/The-LHP-Compiler.svg)](http://hits.dwyl.com/Iqrahaq/The-LHP-Compiler)
 [![GitHub license](https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler)](https://github.com/Iqrahaq/The-LHP-Compiler/blob/master/LICENSE)
 
