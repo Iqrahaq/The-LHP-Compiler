@@ -6,9 +6,18 @@
   The LHP Compiler
 </h1>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://img.shields.io/badge/version-1.0.0-blue)
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIqrahaq%2FThe-LHP-Compiler%2F)](https://hits.seeyoufarm.com)
-[![GitHub license](https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler)](https://github.com/Iqrahaq/The-LHP-Compiler/blob/master/LICENSE)
+<p align="center">
+  
+  <a href="https://img.shields.io/badge/version-1.0.0-blue">
+    <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version">
+  </a>
+  <a href"=https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIqrahaq%2FThe-LHP-Compiler%2F">
+    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIqrahaq%2FThe-LHP-Compiler%2F" alt="Hits">
+   </a>
+  <a href="https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler">
+    <img src="https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler" alt="License">
+  </a>
+</p>
 
 This is a prototype software program written in C that takes the contents of an LHP File (either HTML + C with FastCGI elements or just pure C with FastCGI elements) and compiles the contents into an EXE File.
 
