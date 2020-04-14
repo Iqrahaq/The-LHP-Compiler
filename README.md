@@ -8,7 +8,7 @@
 
 [![Version](https://badge.fury.io/gh/tterb%2FHyde.svg)](https://badge.fury.io/gh/tterb%2FHyde)
 [![HitCount](http://hits.dwyl.com/iqrahaq/LHP.svg)](http://hits.dwyl.com/iqrahaq/LHP)
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![GitHub license](https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler)](https://github.com/Iqrahaq/The-LHP-Compiler/blob/master/LICENSE)
 
 This is a prototype software program written in C that takes the contents of an LHP File (either HTML + C with FastCGI elements or just pure C with FastCGI elements) and compiles the contents into an EXE File.
 
