@@ -19,7 +19,7 @@
   </a>
 </p>
 
-This is a prototype software program written in C that takes the contents of an LHP File (either HTML + C with FastCGI elements or just pure C with FastCGI elements) and compiles the contents into an EXE File compatible for a CGI enabled web-server.
+<p align="center">This is a prototype software program written in C that takes the contents of an LHP File (either HTML + C with FastCGI elements or just pure C with FastCGI elements) and compiles the contents into an EXE File compatible for a CGI enabled web-server.</p>
 
 ## Getting Started
 
