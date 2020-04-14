@@ -7,7 +7,7 @@
 </h1>
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://img.shields.io/badge/version-1.0.0-blue)
-[![HitCount](http://hits.dwyl.com/Iqrahaq/The-LHP-Compiler.svg)](http://hits.dwyl.com/Iqrahaq/The-LHP-Compiler)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIqrahaq%2FThe-LHP-Compiler%2F)](https://hits.seeyoufarm.com)
 [![GitHub license](https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler)](https://github.com/Iqrahaq/The-LHP-Compiler/blob/master/LICENSE)
 
 This is a prototype software program written in C that takes the contents of an LHP File (either HTML + C with FastCGI elements or just pure C with FastCGI elements) and compiles the contents into an EXE File.
