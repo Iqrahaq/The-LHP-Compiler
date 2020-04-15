@@ -101,5 +101,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) f
 ## Acknowledgments
 
 
-# GitHub ReadMe.md Theme
+### GitHub ReadMe.md Theme
 * **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
