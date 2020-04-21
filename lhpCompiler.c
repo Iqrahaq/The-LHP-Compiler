@@ -378,12 +378,13 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
                 // Check for and count occurences of leading whitespace.
 	        	if(line[i] == ' ' || line[i] == '\t'){
 	        		indent_counter++;  
-	        	}
+	        	} else {
+                    break;
+                }
 	    	}
             // Remove certain amount of leading whitespace to clean up C code block for better readability.
             if(lhp_counter % 2 != 0){
-                
-                cLine = &line[indent_counter-1];
+                cLine = &line[indent_counter];
             }           
             printf("%i\n", indent_counter);
     	}
