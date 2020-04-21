@@ -55,34 +55,6 @@ char *get_current_date_and_time()
 }
 
 /**
- * This function opens a file and outputs this as a FILE parameter by using the file name and the type specified as input parameters. 
- * If the file doesn't exist, the file will be created. 
- * The type specified will be the action used by the program to analyse the file, e.g. read, write or append.
- * If there is an issue opening the file, a log of this will be noted to the LHP Log File.
- *
- * @author Iqra Haq
- * @param[in] file_name - The name of the file.
- * @param[in] type - The type of behaviour when opening the file (i.e. read, write, append).
- * @param[out] lhp_log - The log file to store any errors in.
- * \return FILE - Opened File
- * @date 01/01/2020
- */
-FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
-{   
-    // Local file parameter used to open the file based on the file name and file type specified.
-    FILE *in_file_ptr = fopen(file_name, type);
-    // Validation to check if there were any issues opening the file.
-    if(in_file_ptr == NULL){
-    	// Log to be added to the LHP Log file if there were any issues.
-        fprintf(lhp_log, "Error opening %s, please try again...\n", file_name);
-        exit(1);
-    } else {
-    	// Successful file open, therefore return the opened FILE pointer.
-        return in_file_ptr;
-    }
-}
-
-/**
  * This function removes the file extension from a file, i.e. the file "test.php" will become "test.".
  * This function is required to keep the integrity of the file name whilst the program processes its contents.
  * This function doesn't require any output as it involve manipulation of the pointer of the file name that the program has stored.
@@ -109,6 +81,117 @@ void remove_file_extension(char *file_name)
 }
 
 /**
+ * This function opens a file and outputs this as a FILE parameter by using the file name and the type specified as input parameters. 
+ * If the file doesn't exist, the file will be created. 
+ * The type specified will be the action used by the program to analyse the file, e.g. read, write or append.
+ * If there is an issue opening the file, a log of this will be noted to the LHP Log File.
+ *
+ * @author Iqra Haq
+ * @param[in] file_name - The name of the file.
+ * @param[in] type - The type of behaviour when opening the file (i.e. read, write, append).
+ * @param[out] lhp_log - The log file to store any errors in.
+ * \return FILE - Opened File
+ * @date 01/01/2020
+ */
+FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
+{   
+    // Local file parameter used to open the file based on the file name and file type specified.
+    FILE *in_file_ptr = fopen(file_name, type);
+    // Validation to check if there were any issues opening the file.
+    if(in_file_ptr == NULL){
+    	// Log to be added to the LHP Log file if there were any issues.
+        fprintf(lhp_log, "Error opening %s, please try again...\n", file_name);
+    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
+        exit(1);
+    } else {
+    	// Successful file open, therefore return the opened FILE pointer.
+        return in_file_ptr;
+    }
+}
+
+/**
+ * This function opens the input file and checks to see that the content structure of the file are consistent with an expected LHP file. 
+ * If any errors are detected, sufficient output will be given to the user and to the LHP Log file.
+ *
+ * @author Iqra Haq
+ * @param[in] file_name - The name of the input file.
+ * @param[in] line - The data of the file to be read.
+ * @param[out] lhp_log - The log file to store any errors in.
+ * \return FILE - Opened File
+ * @date 01/01/2020
+ */
+void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
+{
+	// LHP Tags and the counter for the tags have been initialised to begin with.
+    char *head = "<£lhp";
+    char *tail = "£>";
+    int lhp_counter = 0;
+    int head_counter = 0;
+    int tail_counter = 0;
+  
+  	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
+    rewind(lhp_file);
+
+    // Variables required for dynamic memory allocation.
+    size_t len = 0;
+    ssize_t read;
+
+    // Loop through the file, line by line. This includes the use of dynamic memory manipulation with the getline() function.
+    while((read = getline(&line, &len, lhp_file)) != -1){
+
+    	// If the line ends with a new line character, replace this with a null terminator (as strstr() searches require null termination).
+        char *position;
+        if((position = strchr(line, '\n')) != NULL){
+            *position = '\0';
+        }
+        
+        // Count the occurences of LHP tags separately and store the count in separate counters.
+        if(strstr(line, head) != NULL){
+        	head_counter++;
+        } else if(strstr(line, tail) != NULL){
+            tail_counter++;
+        }
+
+        // Check that HTML doesn't contain any double quotations to avoid conflict with printf() encapsulation.
+        if ((head_counter + tail_counter) % 2 == 0){
+        	if(strstr(line, "\"")){
+        		// Log to be added to the LHP Log file detailing this issue.
+		    	fprintf(lhp_log, "Error with %s.lhp! This program does not permit double quotation marks in HTML code. Please replace these with single quotation marks!\n", file_name);
+		    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
+		    	exit(1);
+        	}
+        }
+    }
+
+    // Calculate the total amount of LHP tags in file.
+    lhp_counter = head_counter + tail_counter;
+
+    //Validation for too many LHP tags.
+    if(lhp_counter > 2){
+    	// Log to be added to the LHP Log file detailing this issue.
+    	fprintf(lhp_log, "Error with %s.lhp! Too many LHP tags detected in this file.\n", file_name);
+    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
+    	exit(1);
+    // Validation for too little LHP tags.
+    } else if (lhp_counter < 1) {
+    	// Log to be added to the LHP Log file detailing this issue.
+    	fprintf(lhp_log, "Error with %s.lhp! No LHP tags detected in this file.\n", file_name);
+    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
+    	exit(1);
+    // Validation for inconsistent LHP tag pairings.
+    } else if (head_counter != tail_counter){
+    	// Log to be added to the LHP Log file detailing this issue.
+    	fprintf(lhp_log, "Error with %s.lhp! LHP tag pairs are inconsistent. Either a start tag or an end tag is missing!\n", file_name);
+    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
+    	exit(1);
+    }
+        
+    // As dynamic memory manipulation was involved, freeing the memory once the analysis has succeeded is required.
+    free(line);
+    
+}
+
+/**
  * This function is 1st of the 3 major analysis functions of the program 
  * with the main aim of copying any pre-processor directives 
  * from the LHP File (lhp_file) to the top of the C File (linker_file).
@@ -118,13 +201,16 @@ void remove_file_extension(char *file_name)
  * @author Iqra Haq
  * @param[in] lhp_file - The input file where data will be read from.
  * @param[out] linker_file - The output file where the data will be written to.
- * @param[in] line - The data.
+ * @param[in] line - The data of the file to be read and written.
  * @date 01/01/2020
  */
 void analyse_preprocessor_directives(FILE *lhp_file, FILE *linker_file, char *line)
 {
 	// Insert the FastCGI Standard I/O Header Library into the linker file to enable FastCGI Functionality.
     fprintf(linker_file, "%s\n", "#include \"fcgi_stdio.h\"");
+
+  	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
+    rewind(lhp_file);
     
     // Variables required for dynamic memory allocation.
     size_t len = 0;
@@ -174,7 +260,7 @@ void analyse_preprocessor_directives(FILE *lhp_file, FILE *linker_file, char *li
  * @author Iqra Haq
  * @param[in] lhp_file - The input file where data will be read from.
  * @param[out] linker_file - The output file where the data will be written to.
- * @param[in] line - The data.
+ * @param[in] line - The data of the file to be read and written.
  * @date 01/01/2020
  */
 void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
@@ -251,7 +337,7 @@ void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
  * @author Iqra Haq
  * @param[in] lhp_file - The input file where data will be read from.
  * @param[out] linker_file - The output file where the data will be written to.
- * @param[in] line - The data.
+ * @param[in] line - The data of the file to be read and written.
  * @date 01/01/2020
  */
 void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
@@ -260,7 +346,8 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
     char *head = "<£lhp";
     char *tail = "£>";
     int lhp_counter = 0;
-    
+    int indent_counter = 0;
+    char *cLine = " ";    
   	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
     rewind(lhp_file);
 
@@ -277,11 +364,29 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             *position = '\0';
         }
 
-
         // Count the occurences of LHP tags and store the count in lhp_counter.
         if((strstr(line, head) != NULL) || strstr(line, tail) != NULL){
             lhp_counter++;
         }
+
+    	// Variables for the loops have been made here for clarity (easier to identify that there are multiple "for" loops not just one).
+        int i, j;
+
+        if(strstr(line, "main(") != NULL){
+	        // Loop through the line, letter by letter.
+	        for(i=0; i<=strlen(line); i++){
+                // Check for and count occurences of leading whitespace.
+	        	if(line[i] == ' ' || line[i] == '\t'){
+	        		indent_counter++;  
+	        	}
+	    	}
+            // Remove certain amount of leading whitespace to clean up C code block for better readability.
+            if(lhp_counter % 2 != 0){
+                
+                cLine = &line[indent_counter-1];
+            }           
+            printf("%i\n", indent_counter);
+    	}
 
         // Only target the C code by checking the LHP Counter to make sure it is an odd number.
         if(lhp_counter % 2 != 0){
@@ -290,19 +395,20 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
 	        	// Check to see that the "<£lhp" (start/head tag) isn't included with the HTML code (as the counter changes to odd once this line is reached).
                 if((strstr(line, head) == NULL)){
                 	// Make sure to omit the return statement as footer function call needs to be included first.
-                    if((strstr(line, "return ") == NULL)){
-                    	// Print C code statements to the linker_file (the C File). 
+            		if(strstr(line, "return") == NULL && strstr(line, "main(") == NULL ){
+                        // Print C code statements to the linker_file (the C File). 
                     	// Doesn't need to be wrapped in printf() as C code is the primary language in use.
-                    	fprintf(linker_file, "%s\n", line);
-                   }
+                    	fprintf(linker_file, "\t\t%s\n", cLine);
+                	}         
                 }
             } 
         }
 
         // Locate start of main function.
         if(strstr(line, " main(") != NULL){
+            fprintf(linker_file, "%s\n", cLine);
             // Insert relevant FastCGI while statement to allow for C code to be FastCGI compatible.
-            fprintf(linker_file, "\t\t%s\n", "while (FCGI_Accept() >= 0){");
+            fprintf(linker_file, "\t%s\n", "while (FCGI_Accept() >= 0){");
             // Insert header HTML function call into C code block before main.
             fprintf(linker_file, "\t\t%s\n", "header_html();");
         }
@@ -312,10 +418,11 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
         	// Insert footer function call into C code block before main's return statement.
             fprintf(linker_file, "\t\t%s\n", "footer_html();");
             // Insert corresponding end bracket to the finish FastCGI while code block.
-            fprintf(linker_file, "\t\t%s\n", "}");
-            // Print remainder C code (expected to be the main's return statement and main's closing bracket).
-            fprintf(linker_file, "%s\n", line);
-        }  
+            fprintf(linker_file, "\t%s\n", "}");
+            // Print remainder C code (expected to be the main's return statement).
+            fprintf(linker_file, "%s\n", cLine);
+        }
+
     }
     // As dynamic memory manipulation was involved, freeing the memory once the analysis has succeeded is required.
     free(line);
@@ -470,6 +577,9 @@ int main (int argc, char* argv[])
         // Use file_opener function to open the linker file with write permission (as this file needs modification abilities enabled)
         linker_file = file_opener(linker_file_name, "w", lhp_log);
 
+
+        // Call file_checker function to make sure that the content structure of the input file is suitable for the program.
+        file_checker(lhp_file, lhp_log, line, lhp_file_name);
 
         // Call analyse_preprocessor_directives function to analyse relevant Pre-Processor Directives in LHP File line by line and copy them to the C File (linker_file).
         analyse_preprocessor_directives(lhp_file, linker_file, line);
