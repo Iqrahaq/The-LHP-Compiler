@@ -99,7 +99,7 @@ FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
     FILE *in_file_ptr = fopen(file_name, type);
     // Validation to check if there were any issues opening the file.
     if(in_file_ptr == NULL){
-    	// Log to be added to the LHP Log file if there were any issues.
+    	// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
         fprintf(lhp_log, "Error opening %s, please try again...\n", file_name);
     	printf("There was an error processing this file. Please check LHP.log for further details!\n");
         exit(1);
@@ -154,7 +154,7 @@ void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
         // Check that HTML doesn't contain any double quotations to avoid conflict with printf() encapsulation.
         if ((head_counter + tail_counter) % 2 == 0){
         	if(strstr(line, "\"")){
-        		// Log to be added to the LHP Log file detailing this issue.
+    			// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
 		    	fprintf(lhp_log, "Error with %s.lhp! This program does not permit double quotation marks in HTML code. Please replace these with single quotation marks!\n", file_name);
 		    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
 		    	exit(1);
@@ -167,19 +167,19 @@ void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 
     //Validation for too many LHP tags.
     if(lhp_counter > 2){
-    	// Log to be added to the LHP Log file detailing this issue.
+		// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
     	fprintf(lhp_log, "Error with %s.lhp! Too many LHP tags detected in this file.\n", file_name);
     	printf("There was an error processing this file. Please check LHP.log for further details!\n");
     	exit(1);
     // Validation for too little LHP tags.
     } else if (lhp_counter < 1) {
-    	// Log to be added to the LHP Log file detailing this issue.
+		// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
     	fprintf(lhp_log, "Error with %s.lhp! No LHP tags detected in this file.\n", file_name);
     	printf("There was an error processing this file. Please check LHP.log for further details!\n");
     	exit(1);
     // Validation for inconsistent LHP tag pairings.
     } else if (head_counter != tail_counter){
-    	// Log to be added to the LHP Log file detailing this issue.
+		// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
     	fprintf(lhp_log, "Error with %s.lhp! LHP tag pairs are inconsistent. Either a start tag or an end tag is missing!\n", file_name);
     	printf("There was an error processing this file. Please check LHP.log for further details!\n");
     	exit(1);
@@ -475,6 +475,9 @@ void compilation(char *file_name, char *command, FILE *lhp_log)
         fprintf(lhp_log, "%s\n", "Incorrect Operating System in use (OS: Windows).");
         fprintf(lhp_log, "%s\n", "This program cannot be run on this OS.");
         fprintf(lhp_log, "%s\n", "Please move to a Linux/Unix OS to use this.");
+        // Notification is outputted to user to check log file.
+    	printf("The program encountered an error. Please check LHP.log for further details!\n");
+
     #elif __linux__
         // Output relevant log to lhp_log for Linux Operating System in use.
         fprintf(lhp_log, "%s\n", "Correct Operating System in use (OS: Linux).");
@@ -500,6 +503,8 @@ void compilation(char *file_name, char *command, FILE *lhp_log)
         fprintf(lhp_log, "%s\n", "Incorrect Operating System in use (OS: Other).");
         fprintf(lhp_log, "%s\n", "This program cannot be run on this OS.");
         fprintf(lhp_log, "%s\n", "Please move to a Linux/Unix OS to use this.");
+        // Notification is outputted to user to check log file.
+    	printf("The program encountered an error. Please check LHP.log for further details!\n");
     #endif
     
     // Issue the command with system() and wrap with a check to make sure that the command was successfully executed.
@@ -555,6 +560,7 @@ int main (int argc, char* argv[])
     
         // Check to see if wrong number of argument parameters were specified for validation purposes.
         if (argc != 2){
+	    	printf("The program encountered an error. Please check LHP.log for further details!\n");
             // Inform the user via LHP.Log accordingly if wrong number of parameters specified.
             fprintf(lhp_log, "%s\n", "Insufficient number of argument parameters supplied!");
             if (argc <= 1){
