@@ -465,7 +465,7 @@ void compilation(char *file_name, char *command, FILE *lhp_log)
     remove_file_extension(file_name);
 
     // Calculate enough space for the static aspects of the command and the variable file name and store the value.
-    size_t command_length = 96 + ((strlen(file_name)*2));
+    size_t command_length = 81 + ((strlen(file_name)*2));
     // Change memory allocation from NULL (as specified in main) to the calculated value.
     command = realloc(command, command_length);
 
