@@ -120,7 +120,7 @@ FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
  * \return FILE - Opened File
  * @date 01/01/2020
  */
-void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
+int file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 {
 	// LHP Tags and the counter for the tags have been initialised to begin with.
     char *head = "<£lhp";
@@ -144,7 +144,7 @@ void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
         if((position = strchr(line, '\n')) != NULL){
             *position = '\0';
         }
-        
+       
         // Count the occurences of LHP tags separately and store the count in separate counters.
         if(strstr(line, head) != NULL){
         	head_counter++;
@@ -347,7 +347,8 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
     char *tail = "£>";
     int lhp_counter = 0;
     int indent_counter = 0;
-    char *cLine = " ";    
+    char *cLine = " ";
+
   	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
     rewind(lhp_file);
 
@@ -357,7 +358,6 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
 
     // Loop through the file, line by line. This includes the use of dynamic memory manipulation with the getline() function.
     while((read = getline(&line, &len, lhp_file)) != -1){
-
     	// If the line ends with a new line character, replace this with a null terminator (as strstr() searches require null termination).
         char *position;
         if((position = strchr(line, '\n')) != NULL){
@@ -369,44 +369,59 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             lhp_counter++;
         }
 
-    	// Variables for the loops have been made here for clarity (easier to identify that there are multiple "for" loops not just one).
-        int i, j;
-
         if(strstr(line, "main(") != NULL){
 	        // Loop through the line, letter by letter.
-	        for(i=0; i<=strlen(line); i++){
+	        for(int i=0; i<=strlen(line); i++){
                 // Check for and count occurences of leading whitespace.
 	        	if(line[i] == ' ' || line[i] == '\t'){
-	        		indent_counter++;  
+	        		indent_counter++;
+                    if(line[i] == ' '){
+                        line[i] = '\t';
+                    }
 	        	} else {
                     break;
                 }
 	    	}
-            // Remove certain amount of leading whitespace to clean up C code block for better readability.
-            if(lhp_counter % 2 != 0){
-                cLine = &line[indent_counter];
-            }           
-            printf("%i\n", indent_counter);
-    	}
 
+            printf("%i\n", indent_counter);
+        }
+
+                   
         // Only target the C code by checking the LHP Counter to make sure it is an odd number.
         if(lhp_counter % 2 != 0){
+            if(strlen(line) >= indent_counter){
+                cLine = &line[indent_counter];
+            } else {
+                cLine = line;
+            }
+            
         	// Relevant Pre-Processor Directives have already been processed, therefore, they have been omitted here to avoid duplication and other errors.
-            if((strstr(line, "#include") == NULL)){
+            if(strstr(line, "#include") == NULL){
 	        	// Check to see that the "<£lhp" (start/head tag) isn't included with the HTML code (as the counter changes to odd once this line is reached).
-                if((strstr(line, head) == NULL)){
+                if(strstr(line, head) == NULL){
                 	// Make sure to omit the return statement as footer function call needs to be included first.
-            		if(strstr(line, "return") == NULL && strstr(line, "main(") == NULL ){
-                        // Print C code statements to the linker_file (the C File). 
-                    	// Doesn't need to be wrapped in printf() as C code is the primary language in use.
-                    	fprintf(linker_file, "\t\t%s\n", cLine);
-                	}         
+            		if(strstr(cLine, "main(") == NULL){
+                        if(strstr(cLine, "return 0") == NULL){
+                            if((strcmp(cLine, "}") == 0)){
+                                // if((position = strchr(cLine, '\0')) != NULL){
+                                //     *position = '\n';
+                                // } 
+                                // Print C code statements to the linker_file (the C File). 
+                                // Doesn't need to be wrapped in printf() as C code is the primary language in use.
+                                fprintf(linker_file, "%s\n", cLine);
+                            } else {
+                                fprintf(linker_file, "\t\t%s\n", cLine);
+                            }
+                        }
+                        
+                	}
                 }
             } 
         }
 
+
         // Locate start of main function.
-        if(strstr(line, " main(") != NULL){
+        if(strstr(line, "main(") != NULL){
             fprintf(linker_file, "%s\n", cLine);
             // Insert relevant FastCGI while statement to allow for C code to be FastCGI compatible.
             fprintf(linker_file, "\t%s\n", "while (FCGI_Accept() >= 0){");
@@ -415,7 +430,7 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
         }
             
         // Locate the return statement of the main function.
-        if(strstr(line, "return ") != NULL){
+        if(strstr(line, "return 0") != NULL){
         	// Insert footer function call into C code block before main's return statement.
             fprintf(linker_file, "\t\t%s\n", "footer_html();");
             // Insert corresponding end bracket to the finish FastCGI while code block.
