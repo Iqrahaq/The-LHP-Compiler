@@ -110,26 +110,25 @@ FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
 }
 
 /**
- * This function opens the input file and checks to see that the content structure of the file are consistent with an expected LHP file. 
- * If any errors are detected, sufficient output will be given to the user and to the LHP Log file.
+ * This function checks the input file to see that the content structure of the file is consistent with an expected LHP file. 
+ * If any errors are detected, sufficient output will be given to the user and to the LHP Log file and the program will be exited.
  *
  * @author Iqra Haq
  * @param[in] file_name - The name of the input file.
  * @param[in] line - The data of the file to be read.
  * @param[out] lhp_log - The log file to store any errors in.
- * \return FILE - Opened File
  * @date 01/01/2020
  */
-int file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
+void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 {
-	// LHP Tags and the counter for the tags have been initialised to begin with.
+	// LHP Tags and the sufficient counters for validation checks.
     char *head = "<£lhp";
     char *tail = "£>";
     int lhp_counter = 0;
     int head_counter = 0;
     int tail_counter = 0;
   
-  	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
+  	// As the file may have already been read line by line in a previous function, it has been rewinded so that the pointer position is put back to the beginning.
     rewind(lhp_file);
 
     // Variables required for dynamic memory allocation.
@@ -209,7 +208,7 @@ void analyse_preprocessor_directives(FILE *lhp_file, FILE *linker_file, char *li
 	// Insert the FastCGI Standard I/O Header Library into the linker file to enable FastCGI Functionality.
     fprintf(linker_file, "%s\n", "#include \"fcgi_stdio.h\"");
 
-  	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
+    // As the file may have already been read line by line in a previous function, it has been rewinded so that the pointer position is put back to the beginning.
     rewind(lhp_file);
     
     // Variables required for dynamic memory allocation.
@@ -271,7 +270,7 @@ void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
     char *tail = "£>";
     int lhp_counter = 0;
   
-  	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
+    // As the file may have already been read line by line in a previous function, it has been rewinded so that the pointer position is put back to the beginning.
     rewind(lhp_file);
   
 
@@ -347,9 +346,10 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
     char *tail = "£>";
     int lhp_counter = 0;
     int indent_counter = 0;
+    // Pointer for indentation.
     char *cLine = " ";
 
-  	// As the file has already been read line by line in the previous function, rewind it so that the pointer position is put back to the beginning.
+    // As the file may have already been read line by line in a previous function, it has been rewinded so that the pointer position is put back to the beginning.
     rewind(lhp_file);
 
     // Variables required for dynamic memory allocation.
@@ -369,12 +369,14 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             lhp_counter++;
         }
 
+        // Calculate the indentation space of the C code block so that it can be removed when copying to C (Linker) file.
         if(strstr(line, "main(") != NULL){
 	        // Loop through the line, letter by letter.
 	        for(int i=0; i<=strlen(line); i++){
                 // Check for and count occurences of leading whitespace.
 	        	if(line[i] == ' ' || line[i] == '\t'){
 	        		indent_counter++;
+                    // Change blank spaces to tabs for better uniformity and space consistency.
                     if(line[i] == ' '){
                         line[i] = '\t';
                     }
@@ -382,16 +384,17 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
                     break;
                 }
 	    	}
-
-            printf("%i\n", indent_counter);
         }
 
                    
         // Only target the C code by checking the LHP Counter to make sure it is an odd number.
         if(lhp_counter % 2 != 0){
+            // Check to make sure that the current line is bigger than the C code block indentation.
             if(strlen(line) >= indent_counter){
+                // Point to the indentation, so that the line starts here.
                 cLine = &line[indent_counter];
             } else {
+                // Keep line as is.
                 cLine = line;
             }
             
@@ -399,17 +402,17 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             if(strstr(line, "#include") == NULL){
 	        	// Check to see that the "<£lhp" (start/head tag) isn't included with the HTML code (as the counter changes to odd once this line is reached).
                 if(strstr(line, head) == NULL){
-                	// Make sure to omit the return statement as footer function call needs to be included first.
+                	// Make sure to omit the main statement to avoid code being sent to C (Linker) File in the wrong order.
             		if(strstr(cLine, "main(") == NULL){
+                        // Make sure to omit the return statement as footer function call needs to be included first.
                         if(strstr(cLine, "return 0") == NULL){
+                            // Make sure to indent the main function closing bracket.
                             if((strcmp(cLine, "}") == 0)){
-                                // if((position = strchr(cLine, '\0')) != NULL){
-                                //     *position = '\n';
-                                // } 
-                                // Print C code statements to the linker_file (the C File). 
-                                // Doesn't need to be wrapped in printf() as C code is the primary language in use.
+                                // Doesn't need to be wrapped in printf() as C code is being sent to a C (Linker) File.
                                 fprintf(linker_file, "%s\n", cLine);
                             } else {
+                                // Doesn't need to be wrapped in printf() as C code is being sent to a C (Linker) File.
+                                //Indent any extra lines accordingly.
                                 fprintf(linker_file, "\t\t%s\n", cLine);
                             }
                         }
@@ -420,8 +423,9 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
         }
 
 
-        // Locate start of main function.
+        // Locate start of main function and indent any extra lines accordingly before printing.
         if(strstr(line, "main(") != NULL){
+            // Print the main function line.
             fprintf(linker_file, "%s\n", cLine);
             // Insert relevant FastCGI while statement to allow for C code to be FastCGI compatible.
             fprintf(linker_file, "\t%s\n", "while (FCGI_Accept() >= 0){");
@@ -429,7 +433,7 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             fprintf(linker_file, "\t\t%s\n", "header_html();");
         }
             
-        // Locate the return statement of the main function.
+        // Locate the return statement of the main function and indent any extra lines accordingly before printing.
         if(strstr(line, "return 0") != NULL){
         	// Insert footer function call into C code block before main's return statement.
             fprintf(linker_file, "\t\t%s\n", "footer_html();");
