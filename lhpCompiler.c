@@ -111,15 +111,16 @@ FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
 
 /**
  * This function checks the input file to see that the content structure of the file is consistent with an expected LHP file. 
- * If any errors are detected, sufficient output will be given to the user and to the LHP Log file and the program will be exited.
+ * If any errors are detected, sufficient output will be given to the user via the LHP Log file and a status number will be returned.
  *
  * @author Iqra Haq
  * @param[in] file_name - The name of the input file.
  * @param[in] line - The data of the file to be read.
  * @param[out] lhp_log - The log file to store any errors in.
+ * \return int - Error status.
  * @date 01/01/2020
  */
-void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
+int file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 {
 	// LHP Tags and the sufficient counters for validation checks.
     char *head = "<£lhp";
@@ -127,6 +128,8 @@ void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
     int lhp_counter = 0;
     int head_counter = 0;
     int tail_counter = 0;
+    // Status flag for any issues encountered, set at 0 for no errors yet.
+    int status = 0;
   
   	// As the file may have already been read line by line in a previous function, it has been rewinded so that the pointer position is put back to the beginning.
     rewind(lhp_file);
@@ -154,10 +157,9 @@ void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
         // Check that HTML doesn't contain any double quotations to avoid conflict with printf() encapsulation.
         if ((head_counter + tail_counter) % 2 == 0){
         	if(strstr(line, "\"")){
-    			// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
-		    	fprintf(lhp_log, "Error with %s.lhp! This program does not permit double quotation marks in HTML code. Please replace these with single quotation marks!\n", file_name);
-		    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
-		    	exit(1);
+    			// Log to be added to the LHP Log file if there were any issues and status changed to 1 (signifying error occured).
+		    	fprintf(lhp_log, "Error with %s file! This program does not permit double quotation marks in HTML code. Please replace these with single quotation marks!\n", file_name);
+		    	status = 1;
         	}
         }
     }
@@ -167,26 +169,24 @@ void file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 
     //Validation for too many LHP tags.
     if(lhp_counter > 2){
-		// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
-    	fprintf(lhp_log, "Error with %s.lhp! Too many LHP tags detected in this file.\n", file_name);
-    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
-    	exit(1);
+		// Log to be added to the LHP Log file if there were any issues and status changed to 1 (signifying error occured).
+    	fprintf(lhp_log, "Error with %s file! Too many LHP tags detected in this file.\n", file_name);
+    	status = 1;
     // Validation for too little LHP tags.
     } else if (lhp_counter < 1) {
-		// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
-    	fprintf(lhp_log, "Error with %s.lhp! No LHP tags detected in this file.\n", file_name);
-    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
-    	exit(1);
+		// Log to be added to the LHP Log file if there were any issues and status changed to 1 (signifying error occured).
+    	fprintf(lhp_log, "Error with %s file! No LHP tags detected in this file.\n", file_name);
+    	status = 1;
     // Validation for inconsistent LHP tag pairings.
     } else if (head_counter != tail_counter){
-		// Log to be added to the LHP Log file if there were any issues and notification is outputted to user on this.
-    	fprintf(lhp_log, "Error with %s.lhp! LHP tag pairs are inconsistent. Either a start tag or an end tag is missing!\n", file_name);
-    	printf("There was an error processing this file. Please check LHP.log for further details!\n");
-    	exit(1);
+		// Log to be added to the LHP Log file if there were any issues and status changed to 1 (signifying error occured).
+    	fprintf(lhp_log, "Error with %s file! LHP tag pairs are inconsistent. Either a start tag or an end tag is missing!\n", file_name);
+    	status = 1;
     }
         
     // As dynamic memory manipulation was involved, freeing the memory once the analysis has succeeded is required.
     free(line);
+    return status;
     
 }
 
@@ -465,7 +465,7 @@ void compilation(char *file_name, char *command, FILE *lhp_log)
     remove_file_extension(file_name);
 
     // Calculate enough space for the static aspects of the command and the variable file name and store the value.
-    size_t command_length = 81 + ((strlen(file_name)*2));
+    size_t command_length = 83 + ((strlen(file_name)*2));
     // Change memory allocation from NULL (as specified in main) to the calculated value.
     command = realloc(command, command_length);
 
@@ -604,8 +604,15 @@ int main (int argc, char* argv[])
         linker_file = file_opener(linker_file_name, "w", lhp_log);
 
 
+
         // Call file_checker function to make sure that the content structure of the input file is suitable for the program.
-        file_checker(lhp_file, lhp_log, line, lhp_file_name);
+        int status = file_checker(lhp_file, lhp_log, line, lhp_file_name);
+        // Status returned from file_checker is checked to see if any errors encountered.
+        if(status == 1){
+        	// If errors encountered, notify user to check LHP.Log and exit program.
+        	printf("There was an error processing this file. Please check LHP.log for further details!\n");
+        	exit(1);
+        }
 
         // Call analyse_preprocessor_directives function to analyse relevant Pre-Processor Directives in LHP File line by line and copy them to the C File (linker_file).
         analyse_preprocessor_directives(lhp_file, linker_file, line);
