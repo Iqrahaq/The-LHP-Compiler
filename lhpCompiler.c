@@ -193,20 +193,20 @@ int file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 /**
  * This function is 1st of the 3 major analysis functions of the program 
  * with the main aim of copying any pre-processor directives 
- * from the LHP File (lhp_file) to the top of the C File (linker_file).
+ * from the LHP File (lhp_file) to the top of the C File (intermediary_file).
  * This is the first user defined function called in the main function, 
  * therefore, any prints from this function will be at the top of the file.
  * 
  * @author Iqra Haq
  * @param[in] lhp_file - The input file where data will be read from.
- * @param[out] linker_file - The output file where the data will be written to.
+ * @param[out] intermediary_file - The output file where the data will be written to.
  * @param[in] line - The data of the file to be read and written.
  * @date 01/01/2020
  */
-void analyse_preprocessor_directives(FILE *lhp_file, FILE *linker_file, char *line)
+void analyse_preprocessor_directives(FILE *lhp_file, FILE *intermediary_file, char *line)
 {
-	// Insert the FastCGI Standard I/O Header Library into the linker file to enable FastCGI Functionality.
-    fprintf(linker_file, "%s\n", "#include \"fcgi_stdio.h\"");
+	// Insert the FastCGI Standard I/O Header Library into the intermediary file to enable FastCGI Functionality.
+    fprintf(intermediary_file, "%s\n", "#include \"fcgi_stdio.h\"");
 
     // As the file may have already been read line by line in a previous function, it has been rewinded so that the pointer position is put back to the beginning.
     rewind(lhp_file);
@@ -239,7 +239,7 @@ void analyse_preprocessor_directives(FILE *lhp_file, FILE *linker_file, char *li
     			// Null terminate the string (signals that the end of the string has been reached).
                 line[j]='\0';
                 // Print to file.
-                fprintf(linker_file, "%s", line);
+                fprintf(intermediary_file, "%s", line);
             } else {
             	// Stop the loop once the whole line has been analysed so that the next line can be processed.
                 break;
@@ -254,15 +254,15 @@ void analyse_preprocessor_directives(FILE *lhp_file, FILE *linker_file, char *li
 
 /**
  * This function is 2nd of the 3 major analysis functions of the program with the main aim
- * of copying any HTML from the LHP File (lhp_file) to the C File (linker_file).
+ * of copying any HTML from the LHP File (lhp_file) to the C File (intermediary_file).
  * 
  * @author Iqra Haq
  * @param[in] lhp_file - The input file where data will be read from.
- * @param[out] linker_file - The output file where the data will be written to.
+ * @param[out] intermediary_file - The output file where the data will be written to.
  * @param[in] line - The data of the file to be read and written.
  * @date 01/01/2020
  */
-void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
+void analyse_html(FILE *lhp_file, FILE *intermediary_file, char *line)
 {
 
 	// LHP Tags and the counter for the tags have been initialised to begin with.
@@ -275,10 +275,10 @@ void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
   
 
     // Start the header function for the first portion of HTML.
-    fprintf(linker_file, "\n%s\n", "// Header HTML Function.");
-    fprintf(linker_file, "%s\n", "void header_html()\n{");
+    fprintf(intermediary_file, "\n%s\n", "// Header HTML Function.");
+    fprintf(intermediary_file, "%s\n", "void header_html()\n{");
     // Follwiing line allows for the code to be compatible with a web server and therefore viewable via a web browser.
-    fprintf(linker_file, "\t%s\n", "printf(\"Content-type: text/html\\n\\n\");");
+    fprintf(intermediary_file, "\t%s\n", "printf(\"Content-type: text/html\\n\\n\");");
     
     // Variables required for dynamic memory allocation.
     size_t len = 0;
@@ -301,12 +301,12 @@ void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
         // Find the occurence of the start LHP tag (as this indicates the end of the first (header) portion of HTML code.
         if(strstr(line, head) != NULL){
         	// Insert end bracket to end the header HTML function.
-            fprintf(linker_file, "}\n");
+            fprintf(intermediary_file, "}\n");
             // Find the occurence of the corresponding end LHP tag.(as this indicates the start of the final (footer) portion of HTML code.)
         } else if (strstr(line, tail) != NULL){
     		// Start the footer function for the final portion of HTML.
-            fprintf(linker_file, "\n%s\n", "// Footer HTML Function.");
-            fprintf(linker_file, "%s\n", "void footer_html()\n{");
+            fprintf(intermediary_file, "\n%s\n", "// Footer HTML Function.");
+            fprintf(intermediary_file, "%s\n", "void footer_html()\n{");
         }
 
 
@@ -316,30 +316,30 @@ void analyse_html(FILE *lhp_file, FILE *linker_file, char *line)
             if(strstr(line, tail) == NULL){
             	// Check to not include empty lines as these will also be wrapped around by printf() statements (therefore, printing empty lines).
                 if(line[0] != '\0'){
-                    // Print HTML code wrapped in "printf()" statements to the linker_file (the C File).
+                    // Print HTML code wrapped in "printf()" statements to the intermediary_file (the C File).
                     // Printing will ensure HTML is sent straight to output, i.e. straight to the browser.
-                    fprintf(linker_file, "\tprintf(\"%s\");\n", line);
+                    fprintf(intermediary_file, "\tprintf(\"%s\");\n", line);
                 }
             }
         } 
     }
     // End bracket for the footer HTML function.
-    fprintf(linker_file, "}\n");
+    fprintf(intermediary_file, "}\n");
     // As dynamic memory manipulation was involved, freeing the memory once the analysis has succeeded is required.
     free(line);
 }
 
 /**
  * This function is 3rd of the 3 major analysis functions of the program with the main aim
- * of copying any C code from the LHP File (lhp_file) to the C File (linker_file).
+ * of copying any C code from the LHP File (lhp_file) to the C File (intermediary_file).
  * 
  * @author Iqra Haq
  * @param[in] lhp_file - The input file where data will be read from.
- * @param[out] linker_file - The output file where the data will be written to.
+ * @param[out] intermediary_file - The output file where the data will be written to.
  * @param[in] line - The data of the file to be read and written.
  * @date 01/01/2020
  */
-void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
+void analyse_c(FILE *lhp_file, FILE *intermediary_file, char *line)
 {
 	// LHP Tags and the counter for the tags have been initialised to begin with.
     char *head = "<£lhp";
@@ -369,7 +369,7 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             lhp_counter++;
         }
 
-        // Calculate the indentation space of the C code block so that it can be removed when copying to C (Linker) file.
+        // Calculate the indentation space of the C code block so that it can be removed when copying to C (intermediary) file.
         if(strstr(line, "main(") != NULL){
 	        // Loop through the line, letter by letter.
 	        for(int i=0; i<=strlen(line); i++){
@@ -402,18 +402,18 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
             if(strstr(line, "#include") == NULL){
 	        	// Check to see that the "<£lhp" (start/head tag) isn't included with the HTML code (as the counter changes to odd once this line is reached).
                 if(strstr(line, head) == NULL){
-                	// Make sure to omit the main statement to avoid code being sent to C (Linker) File in the wrong order.
+                	// Make sure to omit the main statement to avoid code being sent to C (intermediary) File in the wrong order.
             		if(strstr(cLine, "main(") == NULL){
                         // Make sure to omit the return statement as footer function call needs to be included first.
                         if(strstr(cLine, "return 0") == NULL){
                             // Make sure to indent the main function closing bracket.
                             if((strcmp(cLine, "}") == 0)){
-                                // Doesn't need to be wrapped in printf() as C code is being sent to a C (Linker) File.
-                                fprintf(linker_file, "%s\n", cLine);
+                                // Doesn't need to be wrapped in printf() as C code is being sent to a C (intermediary) File.
+                                fprintf(intermediary_file, "%s\n", cLine);
                             } else {
-                                // Doesn't need to be wrapped in printf() as C code is being sent to a C (Linker) File.
+                                // Doesn't need to be wrapped in printf() as C code is being sent to a C (intermediary) File.
                                 //Indent any extra lines accordingly.
-                                fprintf(linker_file, "\t\t%s\n", cLine);
+                                fprintf(intermediary_file, "\t\t%s\n", cLine);
                             }
                         }
                         
@@ -426,21 +426,21 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
         // Locate start of main function and indent any extra lines accordingly before printing.
         if(strstr(line, "main(") != NULL){
             // Print the main function line.
-            fprintf(linker_file, "%s\n", cLine);
+            fprintf(intermediary_file, "%s\n", cLine);
             // Insert relevant FastCGI while statement to allow for C code to be FastCGI compatible.
-            fprintf(linker_file, "\t%s\n", "while (FCGI_Accept() >= 0){");
+            fprintf(intermediary_file, "\t%s\n", "while (FCGI_Accept() >= 0){");
             // Insert header HTML function call into C code block before main.
-            fprintf(linker_file, "\t\t%s\n", "header_html();");
+            fprintf(intermediary_file, "\t\t%s\n", "header_html();");
         }
             
         // Locate the return statement of the main function and indent any extra lines accordingly before printing.
         if(strstr(line, "return 0") != NULL){
         	// Insert footer function call into C code block before main's return statement.
-            fprintf(linker_file, "\t\t%s\n", "footer_html();");
+            fprintf(intermediary_file, "\t\t%s\n", "footer_html();");
             // Insert corresponding end bracket to the finish FastCGI while code block.
-            fprintf(linker_file, "\t%s\n", "}");
+            fprintf(intermediary_file, "\t%s\n", "}");
             // Print remainder C code (expected to be the main's return statement).
-            fprintf(linker_file, "%s\n", cLine);
+            fprintf(intermediary_file, "%s\n", cLine);
         }
 
     }
@@ -450,7 +450,7 @@ void analyse_c(FILE *lhp_file, FILE *linker_file, char *line)
 
 /**
  * This function is the final major function of the program with the main aim
- * of compiling the C File (linker_file) with enough compatibility for interaction with
+ * of compiling the C File (intermediary_file) with enough compatibility for interaction with
  * SQL statements for database functionality and FastCGI for web server hosting.
  * 
  * @author Iqra Haq
@@ -537,7 +537,7 @@ int main (int argc, char* argv[])
 
     // Relevant FILE variables created. (Note: EXE File is created during compilation function's system() call)
     FILE *lhp_file = NULL;
-    FILE *linker_file = NULL;
+    FILE *intermediary_file = NULL;
     FILE *lhp_log = NULL;
 
     //Dynamic Memory Allocation (Length of file_name will vary).
@@ -575,10 +575,10 @@ int main (int argc, char* argv[])
         size_t file_name_length = ((strlen(argv[1]))+1);
         // Dynamic memory allocation used as the file name will always vary.
         char *lhp_file_name = (char *)malloc(file_name_length);
-        char *linker_file_name = (char *)malloc(file_name_length);
-        // Store the file name into variables for both the LHP file (lhp_file) and the C File (linker_file) (keep file name consistent throughout to avoid confusion.)
+        char *intermediary_file_name = (char *)malloc(file_name_length);
+        // Store the file name into variables for both the LHP file (lhp_file) and the C File (intermediary_file) (keep file name consistent throughout to avoid confusion.)
         strcpy(lhp_file_name, argv[1]);
-        strcpy(linker_file_name, lhp_file_name);
+        strcpy(intermediary_file_name, lhp_file_name);
 
 
         // Check to see if extension is not included within the file name.
@@ -593,15 +593,15 @@ int main (int argc, char* argv[])
         lhp_file = file_opener(lhp_file_name, "r", lhp_log);
         
 
-        // Remove the LHP file extension if the C File (linker_file) variable includes it so that the correct file extension can be applied.
-        if(strstr(linker_file_name, ".lhp") != NULL){
-            remove_file_extension(linker_file_name);
+        // Remove the LHP file extension if the C File (intermediary_file) variable includes it so that the correct file extension can be applied.
+        if(strstr(intermediary_file_name, ".lhp") != NULL){
+            remove_file_extension(intermediary_file_name);
         }
         // Allocate memory for the extension and null terminator also.
-        linker_file_name = realloc(linker_file_name, file_name_length+3);
-        linker_file_name = strcat(linker_file_name, ".c");
-        // Use file_opener function to open the linker file with write permission (as this file needs modification abilities enabled)
-        linker_file = file_opener(linker_file_name, "w", lhp_log);
+        intermediary_file_name = realloc(intermediary_file_name, file_name_length+3);
+        intermediary_file_name = strcat(intermediary_file_name, ".c");
+        // Use file_opener function to open the intermediary file with write permission (as this file needs modification abilities enabled)
+        intermediary_file = file_opener(intermediary_file_name, "w", lhp_log);
 
 
 
@@ -614,26 +614,26 @@ int main (int argc, char* argv[])
         	exit(1);
         }
 
-        // Call analyse_preprocessor_directives function to analyse relevant Pre-Processor Directives in LHP File line by line and copy them to the C File (linker_file).
-        analyse_preprocessor_directives(lhp_file, linker_file, line);
-        // Call analyse_html functon to analyse any HTML in the LHP File line by line and copy them to the C File (linker_file).
-        analyse_html(lhp_file, linker_file, line);
-        // Call analyse_c to analyse any C in the LHP File line by line and copy them to the C File (linker_file).
-        analyse_c(lhp_file, linker_file, line);
+        // Call analyse_preprocessor_directives function to analyse relevant Pre-Processor Directives in LHP File line by line and copy them to the C File (intermediary_file).
+        analyse_preprocessor_directives(lhp_file, intermediary_file, line);
+        // Call analyse_html functon to analyse any HTML in the LHP File line by line and copy them to the C File (intermediary_file).
+        analyse_html(lhp_file, intermediary_file, line);
+        // Call analyse_c to analyse any C in the LHP File line by line and copy them to the C File (intermediary_file).
+        analyse_c(lhp_file, intermediary_file, line);
 
         //Rewind the files that were analysed or modified so that the compilation command can process these accordingly as well as future program reruns.
         rewind(lhp_file);
-        rewind(linker_file);
+        rewind(intermediary_file);
 
-        // Call the final user-defined function: compilation to compile the C File (linker_file).
-        compilation(linker_file_name, command, lhp_log);
+        // Call the final user-defined function: compilation to compile the C File (intermediary_file).
+        compilation(intermediary_file_name, command, lhp_log);
         
         // Close any opened files and free any allocated memory as the program has completed.
         fclose(lhp_file);
-        fclose(linker_file);
+        fclose(intermediary_file);
         fclose(lhp_log);
         free(lhp_file_name);
-        free(linker_file_name);      
+        free(intermediary_file_name);      
     }   
 
     // Main's return function to signify end of program.
