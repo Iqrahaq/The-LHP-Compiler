@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="doxygen/lhpCompilerIcon.png" alt="lhpCompilerIcon">
+  <img src="lhpCompilerIcon.png" alt="lhpCompilerIcon">
 </p>
 
 <h1 align="center" style="font-weight: bold;">
