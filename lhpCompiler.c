@@ -19,7 +19,6 @@
 /**
  * @file lhpCompiler.c
  * @author Iqra Haq
- * @date 01/01/2020
  * @brief This file contains all of the source code for the lhpCompiler.
  */
 
@@ -37,7 +36,6 @@
  * 
  * @author Iqra Haq
  * \return A pointer to the Date&Time
- * @date 01/01/2020
  */
 char *get_current_date_and_time()
 {
@@ -61,7 +59,6 @@ char *get_current_date_and_time()
  * 
  * @author Iqra Haq
  * @param[in] file_name - The name of the file.
- * @date 01/01/2020
  */
 void remove_file_extension(char *file_name)
 {
@@ -91,7 +88,6 @@ void remove_file_extension(char *file_name)
  * @param[in] type - The type of behaviour when opening the file (i.e. read, write, append).
  * @param[out] lhp_log - The log file to store any errors in.
  * \return FILE - Opened File
- * @date 01/01/2020
  */
 FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
 {   
@@ -118,7 +114,6 @@ FILE *file_opener(char *file_name, const char *type, FILE *lhp_log)
  * @param[in] line - The data of the file to be read.
  * @param[out] lhp_log - The log file to store any errors in.
  * \return int - Error status.
- * @date 01/01/2020
  */
 int file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
 {
@@ -201,7 +196,6 @@ int file_checker(FILE *lhp_file, FILE *lhp_log, char *line, char *file_name)
  * @param[in] lhp_file - The input file where data will be read from.
  * @param[out] intermediary_file - The output file where the data will be written to.
  * @param[in] line - The data of the file to be read and written.
- * @date 01/01/2020
  */
 void analyse_preprocessor_directives(FILE *lhp_file, FILE *intermediary_file, char *line)
 {
@@ -260,7 +254,6 @@ void analyse_preprocessor_directives(FILE *lhp_file, FILE *intermediary_file, ch
  * @param[in] lhp_file - The input file where data will be read from.
  * @param[out] intermediary_file - The output file where the data will be written to.
  * @param[in] line - The data of the file to be read and written.
- * @date 01/01/2020
  */
 void analyse_html(FILE *lhp_file, FILE *intermediary_file, char *line)
 {
@@ -337,7 +330,6 @@ void analyse_html(FILE *lhp_file, FILE *intermediary_file, char *line)
  * @param[in] lhp_file - The input file where data will be read from.
  * @param[out] intermediary_file - The output file where the data will be written to.
  * @param[in] line - The data of the file to be read and written.
- * @date 01/01/2020
  */
 void analyse_c(FILE *lhp_file, FILE *intermediary_file, char *line)
 {
@@ -457,7 +449,6 @@ void analyse_c(FILE *lhp_file, FILE *intermediary_file, char *line)
  * @param[in] file_name - The name of the file to be used.
  * @param[in] command - The pointer to the command.
  * @param[out] lhp_log - The log file to store any errors in. 
- * @date 01/01/2020
  */
 void compilation(char *file_name, char *command, FILE *lhp_log)
 {
@@ -530,7 +521,6 @@ void compilation(char *file_name, char *command, FILE *lhp_log)
 * @param[in] argc - Number of argument parameters supplied by user.
 * @param[in] argv - List of arguments supplied by user.
 * \return int - Error status.
-* @date 01/01/2020
 */
 int main (int argc, char* argv[])
 {
