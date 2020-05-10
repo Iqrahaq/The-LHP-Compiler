@@ -70,7 +70,8 @@ dos2unix [lhpFile]
 ## Authors
 **Myself** 
 
-See also the list of [contributors](https://github.com/Iqrahaq/lhpCompiler/raw/master/contributors) who participated in this project.
+## Credits
+Dynamic File Reading - http://man7.org/linux/man-pages/man3/getline.3.html
 
 ## License
 
