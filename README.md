@@ -30,13 +30,13 @@
 
 <p align="center"> This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system. </p>
 
-<p align="center"> To update </p>
+To update:
 
 ```
 sudo apt-get update -y && sudo apt-get upgrade -y
 ```
 
-<p align="center"> To download the prerequisite packages </p>
+To download the prerequisite packages:
 
 ```
 sudo apt-get install mysql-server libmysqlclient-dev libfcgi libfcgi-dev gcc -y
@@ -44,7 +44,7 @@ sudo apt-get install mysql-server libmysqlclient-dev libfcgi libfcgi-dev gcc -y
 
 ### Installing
 
-<p align="center"> First you must retrieve the C source code from this repository and then compile the program. </p> 
+First you must retrieve the C source code from this repository and then compile the program.
 To do this, follow the steps below:
 
 1. Retrieve the C Source Code.
@@ -63,7 +63,7 @@ gcc lhpCompiler.c –o lhpCompiler
 ./lhpCompiler [lhpFile]
 ```
 
-Note: Any LHP Files used must be in Unix format, to convert to unix format run the following command:
+<p align="center"> Note: Any LHP Files used must be in Unix format, to convert to unix format run the following command: </p>
 ```
 dos2unix [lhpFile]
 ```
