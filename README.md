@@ -31,9 +31,11 @@ What things you need to install the software and how to install them
 This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system.
 
 <p align="center"> To update </p>
+<p align="center">
 ```
-<p align="center"> sudo apt-get update -y && sudo apt-get upgrade -y </p>
+sudo apt-get update -y && sudo apt-get upgrade -y
 ```
+</p>
 
 <p align="center"> To download the prerequisite packages </p>
 ```
