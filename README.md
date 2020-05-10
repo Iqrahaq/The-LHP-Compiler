@@ -70,7 +70,7 @@ dos2unix [lhpFile]
 ```
 
 ## Authors
-**Myself** 
+**Iqra Haq** - Student @ Northumbria University, Newcastle upon Tyne, UK.
 
 ## Credits
 Dynamic File Reading - http://man7.org/linux/man-pages/man3/getline.3.html
@@ -80,4 +80,4 @@ Dynamic File Reading - http://man7.org/linux/man-pages/man3/getline.3.html
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
 
 ## Acknowledgments
-Project Supervisor - Dr. Nicholas Dalton (Northumbria University, Newcastle upon Tyne, UK).
+**Dr. Nicholas Dalton** - Project Supervisor @ Northumbria University, Newcastle upon Tyne, UK.
