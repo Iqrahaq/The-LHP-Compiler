@@ -63,7 +63,7 @@ gcc lhpCompiler.c –o lhpCompiler
 ./lhpCompiler [lhpFile]
 ```
 
-<p align="center"> Note: Any LHP Files used must be in Unix format, to convert to unix format run the following command: </p>
+<p align="center"> Note: Any LHP Files used must be in <b> Unix format </b>, to convert to unix format run the following command: </p>
 
 ```
 dos2unix [lhpFile]
