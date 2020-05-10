@@ -30,14 +30,14 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system.
 
-To update:
+<p align="center"> To update </p>
 ```
-sudo apt-get update -y && sudo apt-get upgrade -y
+<p align="center"> sudo apt-get update -y && sudo apt-get upgrade -y </p>
 ```
 
-To download the prerequisite packages
+<p align="center"> To download the prerequisite packages </p>
 ```
-sudo apt-get install mysql-server libmysqlclient-dev libfcgi libfcgi-dev gcc -y
+<p align="center"> sudo apt-get install mysql-server libmysqlclient-dev libfcgi libfcgi-dev gcc -y </p>
 ```
 
 
