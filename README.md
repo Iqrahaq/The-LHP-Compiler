@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center" style="font-weight: bold;">
-  The LHP Compiler (INCOMPLETE README)
+  The LHP Compiler
 </h1>
 
 <p align="center">
@@ -23,12 +23,12 @@
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine. Note: Your machine must be Unix-based for this program to work!
+<p align="center"> These instructions will get you a copy of the project up and running on your local machine. </p>
+<p align="center"> Note: Your machine must be Unix-based for this program to work! </p>
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system.
+<p align="center"> This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system. </p>
 
 <p align="center"> To update </p>
 
@@ -44,7 +44,7 @@ sudo apt-get install mysql-server libmysqlclient-dev libfcgi libfcgi-dev gcc -y
 
 ### Installing
 
-First you must retrieve the C source code from this repository and then compile the program. 
+<p align="center"> First you must retrieve the C source code from this repository and then compile the program. </p> 
 To do this, follow the steps below:
 
 1. Retrieve the C Source Code.
