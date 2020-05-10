@@ -37,10 +37,10 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 ```
 
 <p align="center"> To download the prerequisite packages </p>
+
 ```
 sudo apt-get install mysql-server libmysqlclient-dev libfcgi libfcgi-dev gcc -y
 ```
-
 
 ### Installing
 
