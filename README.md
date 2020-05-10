@@ -24,7 +24,7 @@
 ## Getting Started
 
 <p align="center"> These instructions will get you a copy of the project up and running on your local machine. </p>
-<p align="center"> Note: Your machine must be Unix-based for this program to work! </p>
+<p align="center"> Note: Your machine must be <b> Unix-based </b> for this program to work! </p>
 
 ### Prerequisites
 
