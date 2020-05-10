@@ -28,7 +28,7 @@
 
 ### Prerequisites
 
-<p align="center"> This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system. </p>
+This program requires various prerequisite packages and so it is recommended that these are installed on an up-to-date system.
 
 To update:
 
