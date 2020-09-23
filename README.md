@@ -1,3 +1,5 @@
+<meta name="author" content="Iqra Haq">
+
 <p align="center">
   <img src="lhpCompilerIcon.png" alt="lhpCompilerIcon">
 </p>
