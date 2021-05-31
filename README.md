@@ -9,13 +9,10 @@
 </h1>
 
 <p align="center">
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/Iqrahaq/The-LHP-Compiler">
   <a href="https://github.com/Iqrahaq/The-LHP-Compiler/blob/main/LICENSE">
     <img alt="GitHub license" src="https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler">
   </a>  
-  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/Iqrahaq/The-LHP-Compiler">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Iqrahaq/The-LHP-Compiler">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/Iqrahaq/The-LHP-Compiler">
   <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/ea3a99f3ce1f43d1a65d8252ba0fa3ea"> <br/>
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/Iqrahaq/The-LHP-Compiler">
 </p>
