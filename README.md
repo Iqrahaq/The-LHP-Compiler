@@ -9,16 +9,15 @@
 </h1>
 
 <p align="center">
-  
-  <a href="https://img.shields.io/badge/version-1.0.0-blue">
-    <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version">
-  </a>
-  <a href"=https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIqrahaq%2FThe-LHP-Compiler%2F">
-    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIqrahaq%2FThe-LHP-Compiler%2F" alt="Hits">
-   </a>
-  <a href="https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler">
-    <img src="https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler" alt="License">
-  </a>
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/Iqrahaq/The-LHP-Compiler">
+  <a href="https://github.com/Iqrahaq/The-LHP-Compiler/blob/main/LICENSE">
+    <img alt="GitHub license" src="https://img.shields.io/github/license/Iqrahaq/The-LHP-Compiler">
+  </a>  
+  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/Iqrahaq/The-LHP-Compiler">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Iqrahaq/The-LHP-Compiler">
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/Iqrahaq/The-LHP-Compiler">
+  <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/4142cf271c1141919d015f160e561b1e"> <br/>
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/Iqrahaq/The-LHP-Compiler">
 </p>
 
 <p align="center">This is a prototype software program written in C that takes the contents of an LHP File (either HTML + C with FastCGI elements or just pure C with FastCGI elements) and compiles the contents into an EXE File compatible for a CGI enabled web-server.</p>
