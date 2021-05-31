@@ -16,7 +16,7 @@
   <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/Iqrahaq/The-LHP-Compiler">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Iqrahaq/The-LHP-Compiler">
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/Iqrahaq/The-LHP-Compiler">
-  <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/4142cf271c1141919d015f160e561b1e"> <br/>
+  <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/ea3a99f3ce1f43d1a65d8252ba0fa3ea"> <br/>
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/Iqrahaq/The-LHP-Compiler">
 </p>
 
